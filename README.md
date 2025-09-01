@@ -13,12 +13,12 @@ EnviroTrack is a modular firmware project for the ESP32, designed to log environ
 - 🧵 FreeRTOS task-based design  
 
 ## 🚀 Getting Started
-- Clone the repository
+1. Clone the repository
 git clone https://github.com/mbdmedrano1128/esp32-envirotrack.git
 cd esp32-envirotrack
-- Activate the ESP-IDF environment
+2. Activate the ESP-IDF environment
 . $HOME/documents/projects/esp/esp-idf/export.sh
-- Build and flash the firmware
+3. Build and flash the firmware
 idf.py build
 idf.py -p /dev/ttyUSB0 flash monitor
 
