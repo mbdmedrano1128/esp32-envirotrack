@@ -2,12 +2,13 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "driver/adc.h"
 #include "esp_log.h"
 
 #define LED_GPIO GPIO_NUM_2
 #define BLINK_DELAY_MS 500
-
-static const char *TAG = "Blink";
+#define POT_ADC_CHANNEL ADC1_CHANNEL_6  // GPIO34
+#define TAG "EnviroTrack"
 
 void app_main(void)
 {
@@ -21,14 +22,22 @@ void app_main(void)
     };
     gpio_config(&io_conf);
 
-    ESP_LOGI(TAG, "Starting LED blink loop...");
+    // Configure ADC1 Channel 6 (GPIO34)
+    adc1_config_width(ADC_WIDTH_BIT_12); // 0–4095 range
+    adc1_config_channel_atten(POT_ADC_CHANNEL, ADC_ATTEN_DB_11); // Full range: 0–3.3V
+
+    ESP_LOGI(TAG, "Starting LED blink + ADC read loop...");
 
     while (1)
     {
-        gpio_set_level(LED_GPIO, 1); // LED ON
+        // Blink LED
+        gpio_set_level(LED_GPIO, 1);
+        vTaskDelay(pdMS_TO_TICKS(BLINK_DELAY_MS));
+        gpio_set_level(LED_GPIO, 0);
         vTaskDelay(pdMS_TO_TICKS(BLINK_DELAY_MS));
 
-        gpio_set_level(LED_GPIO, 0); // LED OFF
-        vTaskDelay(pdMS_TO_TICKS(BLINK_DELAY_MS));
+        // Read ADC value
+        int adc_reading = adc1_get_raw(POT_ADC_CHANNEL);
+        ESP_LOGI(TAG, "Potentiometer ADC value: %d", adc_reading);
     }
 }
