@@ -1,5 +1,5 @@
 idf_component_register(
     SRCS "envirotrack.c"
     INCLUDE_DIRS "."
-    REQUIRES dht11
+    REQUIRES esp_wifi esp_event esp_netif nvs_flash
 )
